@@ -9,6 +9,8 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<div id="PlaceHolderElement"></div>
+
 <table class="table">
     <thead>
         <tr>
@@ -28,26 +30,132 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <button class="btn btn-primary edit" data-url="@Url.Action("Editm")" data-id="@item.Id" data-toggle="ajax-modal" data-target="#addEmployee" >Edit</button>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary Edit">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info Details">Detalhar</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger Delete">Deletar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<button type="button" id="botaoEvento" class="btn btn-primary" >
+  eventolising
+</button>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  Launch static backdrop modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        abriu o modal padrao
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="container">
+  <!-- Trigger the modal with a button -->
+  <button type="button" class="btn btn-info btn-lg" onclick="abrirModal()" id="myBtn">AbrirModal com js</button>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal testando</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+  function abrirModal(){
+      let el = document.getElementById('staticBackdrop')
+      var myModal = new bootstrap.Modal(el)
+      myModal.show();
+  }
+  
+  const botao = document.querySelector('#botaoEvento')
+  botao.addEventListener('click',() =>{
+    alert('clicou no botao')
+  })
+  
+
+</script>
+
+
+
+
+
+@section scripts{
+    <script>
+        $(".edit").click(function () {
+            var id = $(this).attr("data-id");
+            $("#modal").load("Editm?id=" + id, function () {
+                $("#modal").modal();
+            })
+        });
+
+        var PlaceHolderElement = $('#PlaceHolderElement')
+        $('button[data-toggle="ajax-modal"]').click(function(event){
+          var url = $(this).data('url'); //data-url
+          var id = $(this).data('id');   //data-id
+          var enderecoFull = `${url}/${id}`
+
+          $.get(enderecoFull).done(function(data){
+            PlaceHolderElement.html(data)
+            PlaceHolderElement.find('.modal').modal('show');
+          })
+          
+        })
+    </script>
+}

@@ -81,6 +81,21 @@ namespace MvcMovie.Controllers
             return View(movie);
         }
 
+         public async Task<IActionResult> Editm(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var movie = await _context.Movie.FindAsync(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            return PartialView("_Editm", movie);
+        }
+
         // POST: Movies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
